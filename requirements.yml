@@ -1,0 +1,6 @@
+---
+collections:
+  - name: cisco.dnac
+    version: "6.40.0"
+  - name: ansible.utils
+    version: "5.1.2"

@@ -1,0 +1,39 @@
+---
+- name: Run exactly one approved device operation
+  hosts: localhost
+  gather_facts: false
+  vars:
+    ansible_python_interpreter: "{{ ansible_playbook_python }}"
+  tasks:
+    - name: Execute the selected SWIM phase
+      cisco.dnac.swim_workflow_manager:
+        dnac_host: "{{ controller }}"
+        dnac_username: "{{ lookup('ansible.builtin.env', 'CC_USERNAME') }}"
+        dnac_password: "{{ lookup('ansible.builtin.env', 'CC_PASSWORD') }}"
+        dnac_version: "2.3.7.9"
+        dnac_verify: "{{ verify_tls | default(true) | bool }}"
+        dnac_debug: false
+        dnac_log: false
+        dnac_api_task_timeout: "{{ task_timeout | int }}"
+        dnac_task_poll_interval: 15
+        config_verify: false
+        state: merged
+        config: "{{ swim_config }}"
+      register: swim_result
+      no_log: true
+      ignore_errors: true
+    - name: Persist non-credential operation result
+      ansible.builtin.copy:
+        dest: "{{ result_path }}"
+        mode: "0600"
+        content: >-
+          {{ {'changed': swim_result.changed | default(false),
+              'failed': swim_result.failed | default(false),
+              'response': swim_result.response | default({}),
+              'msg': swim_result.msg | default('')} | to_nice_json }}
+      no_log: true
+    - name: Require a successful module result
+      ansible.builtin.assert:
+        that:
+          - not (swim_result.failed | default(false))
+      no_log: true

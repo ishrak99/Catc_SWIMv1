@@ -1,0 +1,20 @@
+{
+  "description": " Image upgrade policy for Cisco Catalyst 9300 Series Switches",
+  "controller": "X.X.X.X",
+  "verify_tls": false,
+  "controller_version": "2.3.7.11",
+  "timezone": "Australia/Sydney",
+  "operation_timeout_seconds": 3600,
+  "verification_timeout_seconds": 1800,
+  "soak_seconds": 300,
+  "inventory_max_age_seconds": 3600,
+  "enforce_readiness_freshness": false,
+  "images": {
+    "Cisco Catalyst 9300 Series Switches": {
+      "image_name": "cat9k_iosxe.17.15.06.SPA.bin",
+      "target_version": "17.15.6",
+      "allowed_current_versions": ["16.12.1"],
+      "upgrade_mode": "install"
+    }
+  }
+}
